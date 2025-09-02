@@ -94,9 +94,13 @@ class Collector(commands.GroupCog):
 
         # Emerald logic
         if emerald:
+            # Gather only specials that exist for this ball (except Shiny/Emerald)
+            existing_special_ids = await BallInstance.filter(ball=countryball).values_list("special_id", flat=True)
             required_specials = [
-                s for s in specials.values() if s.name not in ["Shiny", "Emerald"]
+                s for s in specials.values()
+                if s.id in existing_special_ids and s.name not in ["Shiny", "Emerald"]
             ]
+
             missing = []
             for req in required_specials:
                 has = await BallInstance.filter(
@@ -106,10 +110,12 @@ class Collector(commands.GroupCog):
                 ).exists()
                 if not has:
                     missing.append(req.name)
+
             if missing:
                 return await interaction.followup.send(
                     f"You are missing the following specials for {countryball.country}: {', '.join(missing)}"
                 )
+
             player, _ = await Player.get_or_create(discord_id=interaction.user.id)
             await BallInstance.create(
                 ball=countryball, player=player, attack_bonus=0, health_bonus=0, special=special
@@ -271,9 +277,13 @@ class Collector(commands.GroupCog):
             checkfilter = {"player__discord_id": int(f"{ball.player}"), "ball": ball.ball}
 
             if emerald:
+                # Gather only specials that exist for this ball (except Shiny/Emerald)
+                existing_special_ids = await BallInstance.filter(ball=ball.ball).values_list("special_id", flat=True)
                 required_specials = [
-                    s for s in specials.values() if s.name not in ["Shiny", "Emerald"]
+                    s for s in specials.values()
+                    if s.id in existing_special_ids and s.name not in ["Shiny", "Emerald"]
                 ]
+
                 missing = []
                 for req in required_specials:
                     has = await BallInstance.filter(
@@ -281,6 +291,7 @@ class Collector(commands.GroupCog):
                     ).exists()
                     if not has:
                         missing.append(req.name)
+
                 if not missing:
                     if option == "ALL":
                         entries.append(
