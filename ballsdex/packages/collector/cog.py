@@ -28,16 +28,16 @@ if TYPE_CHECKING:
 # You must have a special called "Collector" and "Diamond" for this to work.
 # Emerald is also supported here.
 
-T1Req = 50
-T1Rarity = 1
-CommonReq = 500
-CommonRarity = 150
+T1Req = 120
+T1Rarity = 0.025
+CommonReq = 890
+CommonRarity = 1.0
 RoundingOption = 10
 
 dT1Req = 3
-dT1Rarity = 1
+dT1Rarity = 0.025
 dCommonReq = 10
-dCommonRarity = 150
+dCommonRarity = 1.0
 dRoundingOption = 1
 
 log = logging.getLogger("ballsdex.packages.collector.cog")
