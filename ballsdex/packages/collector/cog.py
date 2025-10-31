@@ -34,7 +34,7 @@ CommonReq = 890
 CommonRarity = 1.0
 RoundingOption = 10
 
-dT1Req = 3
+dT1Req = 2
 dT1Rarity = 0.025
 dCommonReq = 10
 dCommonRarity = 1.0
