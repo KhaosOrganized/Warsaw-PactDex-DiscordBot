@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 # You must have a special called "Collector" and "Diamond" for this to work.
 # Emerald is also supported here.
 
-T1Req = 120
+T1Req = 65
 T1Rarity = 0.025
 CommonReq = 890
 CommonRarity = 1.0
