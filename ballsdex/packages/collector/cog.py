@@ -94,13 +94,26 @@ class Collector(commands.GroupCog):
 
         # Emerald logic
         if emerald:
-            # Gather only specials that exist for this ball (except Shiny/Emerald)
+            # Always require Collector and Diamond, even if they don't exist
+            static_required_names = ["Collector", "Diamond"]
+
+            # Also include any existing specials for this ball (except Shiny/Emerald)
             existing_special_ids = await BallInstance.filter(ball=countryball).values_list("special_id", flat=True)
-            required_specials = [
+            dynamic_required_specials = [
                 s for s in specials.values()
                 if s.id in existing_special_ids and s.name not in ["Shiny", "Emerald"]
             ]
 
+            # Combine the static and dynamic lists, avoiding duplicates
+            required_specials = []
+            seen = set()
+            for s in specials.values():
+                if s.name in static_required_names or s in dynamic_required_specials:
+                    if s.name not in ["Shiny", "Emerald"] and s.name not in seen:
+                        required_specials.append(s)
+                        seen.add(s.name)
+
+            # Check if the player owns all required specials
             missing = []
             for req in required_specials:
                 has = await BallInstance.filter(
@@ -123,6 +136,7 @@ class Collector(commands.GroupCog):
             return await interaction.followup.send(
                 f"Congrats! You created an **Emerald {countryball.country}** card!"
             )
+
 
         # Collector/Diamond logic
         filters = {"ball": countryball, "player__discord_id": interaction.user.id}
